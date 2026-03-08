@@ -1,0 +1,33 @@
+---------------------------------------------------------------------------------------------------
+Version: 2.0.0
+Date: 08. 03. 2026
+  Info:
+    - Initial version
+  Major Features:
+    - Bots can place items with affordance using only their component items. This requires strict ordering to work, so many items have had tier subgroups and orders changed. Unfortunately, it also require breaking the pipette tool.
+  Ease of use:
+    - Splitters, underground belts, and some modded belt-items now cost only some quantity of their base transport belt to place and craft
+    - Underground pipes have affordance with pipes
+    - Most circuit network items have affordance with the decider combinator
+    - Elevated rail ramps have affordance with elevated rail supports
+    - Rail signals have affordance with chain signals
+    - Logistic containers have affordance with either the passive or active provider chest
+    - Large electric poles with two medium electric poles
+  Balancing:
+    - Belts have had their recipe changed to reflect their added splitter and underground recipe costs
+  Minor Features:
+    - Smelting an item will result in its base component
+  Modding:
+    - Support for several loader mods
+    - AAI loaders cost four if lubrication cost is enabled
+    - Support for lane splitters
+    - Support for Deadlock's Stacking Beltboxes
+    - Support for 5Dim's New Transport belts and pipes
+    - Support for Angel's logistic warehouses and silos
+    - Support for Warehousing's logistic warehouses and storehouses
+    - Support for AAI container's logistic strongboxes, storehouses, and warehouses
+    - Support for AAI programmable structures
+    - Support for Dredgework's belts and wire buoys
+    - Support for More Long Inserters
+    - Support for Flow Control
+    - Support for Space Exploration's pipes and belts
