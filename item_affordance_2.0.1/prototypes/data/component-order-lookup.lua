@@ -41,7 +41,7 @@ end
 
 _G.item_affordance_subgroup_order = {}
 
-if settings.startup["elevated-rail-component-base"].value == "rails" then
+if settings.startup["elevated-rail-component-base"] and settings.startup["elevated-rail-component-base"].value == "rails" then
     item_affordance_subgroup_order["rail-support"] = "rail"
     item_affordance_subgroup_order["rail-ramp"] = "rail"
 
