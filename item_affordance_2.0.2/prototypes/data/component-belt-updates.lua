@@ -1,11 +1,15 @@
 local componentUtil = require("component-util")
 
 local function modifyBelt(type, name, component, cost, amount)
-    if data.raw.item[name] and data.raw.recipe[name] and data.raw[type][name] then
+    local item = data.raw.item[name]
+    if item and data.raw.recipe[name] and data.raw[type][name] then
         componentUtil.assignComponentToEntity(type, name, component, cost)
         if type == "underground-belt" then
             cost = cost * 2
+        elseif type == "transport-belt" and item.stack_size < 100 then
+            item.stack_size = 100
         end
+
         local recipe = componentUtil.fromComponentRecipie(name, component, cost, amount)
         if mods["space-age"] and recipe and recipe["additional_categories"] == nil then
             recipe["additional_categories"] = {"metallurgy"}

@@ -1,4 +1,7 @@
 require("prototypes.globals")
+require("prototypes.data.pipette-data")
+
+
 
 if settings.startup["belt-components"].value and settings.startup["belt-component-rebalance"].value then
     require("prototypes.data.rebalance-belt-costs").data_rebalance()

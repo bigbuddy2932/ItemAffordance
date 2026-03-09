@@ -14,6 +14,7 @@ local function beltComponentCost(type_name, order, default_value)
         type = "int-setting",
         name = name,
         minimum_value = 3,
+        maximum_value = 100,
         setting_type = "startup",
         order = string.format("a%s[%s]", order, name),
         default_value = default_value

@@ -1,11 +1,13 @@
 require("prototypes.globals")
 require("prototypes.data.component-order-lookup")
 
+local pipetteOverrides = data.raw["mod-data"]["item_affordance-entity-to-item-list"].data
+local items = data.raw["item"]
 local ITEM_GROUP_PATTERN = "%w*%[[%w-]+%]"
 local handledItems = {}
 
 local function handleItemSubgroup(item_name)
-    local item = data.raw["item"][item_name]
+    local item = items[item_name]
 
     if item == nil then
         item = data.raw["rail-planner"][item_name]
@@ -31,7 +33,7 @@ local function handleItemOrder(item_name, sample_result)
     end
 
     handleItemSubgroup(item_name)
-    local item = data.raw["item"][item_name]
+    local item = items[item_name]
     if item == nil then
         item = data.raw["rail-planner"][item_name]
     end
@@ -50,7 +52,7 @@ local function handleItemOrder(item_name, sample_result)
                 if end_index + 1 < string.len(item.order) then
                     possible_order = possible_order .. string.sub(item.order, end_index + 1)
                 end
-                local sample_item = data.raw["item"][sample_result]
+                local sample_item = items[sample_result]
 
                 if sample_item then
                     local sample_order = sample_item.order
@@ -131,8 +133,8 @@ local fromComponentRecipie = function(result_name, component_name, cost, amount)
         recipe.auto_recycle = false
         recipe.results = {{amount = amount, name = result_name, type = "item"}}
 
-        if data.raw["item"][result_name] and data.raw["item"][result_name].auto_recycle then
-            data.raw["item"][result_name].auto_recycle = false
+        if items[result_name] and items[result_name].auto_recycle then
+            items[result_name].auto_recycle = false
         end
         recycleRecipe(result_name .. "-recycling", {
             ingredient = result_name,
@@ -148,7 +150,8 @@ end
 local assignComponentToEntity = function(result_type, result_name, component_name, cost)
     cost = cost or 1
     local entity = data.raw[result_type][result_name]
-    if entity then
+    local component_item = items[component_name]
+    if entity and component_item then
         if settings.startup["affordance-retrieve-base"].value then
             entity.minable.results = {{name = component_name, amount = cost, type = "item"}}
             entity.minable.result = nil
@@ -156,17 +159,27 @@ local assignComponentToEntity = function(result_type, result_name, component_nam
         end
 
         if settings.startup["affordance-place-with-base"].value then
-
             entity.placeable_by = {{item = component_name, count = cost}}
+            local afforded_item = items[result_name]
+
+            if afforded_item then
+                pipetteOverrides[result_name] = result_name
+            else
+                log("Failed to register pipette override for " .. result_name .. " because " .. result_name .. " is a nil item")
+            end
 
             -- an item's order seems to matter to an entity's placeable_by
             handleItemOrder(component_name, result_name)
         end
     elseif settings.startup["affordance-retrieve-base"].value or settings.startup["affordance-place-with-base"].value then
-        log("Failed to assign entity to component for " .. result_name)
+        if component_item == nil then
+            log("Failed to assign entity to component for " .. result_name .. " because " .. component_name .. " is a nil item")
+        end
+        if entity == nil then
+            log("Failed to assign entity to component for " .. result_name .. " because it is a nil entity")
+        end
     end
 end
-
 
 local attachComponentToItem = function(result_type, result_name, component_name, cost)
     cost = cost or 1

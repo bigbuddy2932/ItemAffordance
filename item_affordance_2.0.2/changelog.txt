@@ -1,11 +1,21 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.0.2
+Date: 2026-03-09
+  Major Features:
+    - Pipette selects ghost for afforded item to the player's cursor even if they don't have the afforded item directly
+  Minor Features:
+    - Option to autocraft an afforded item on pipette is available in the player settings, but off by default. It works by directly inserting/removing the needed items, so you don't need a clear crafting queue to use it
+  Bugfixes:
+    - Pipette works again with the help of Shemp, thank you!
+    - Fixed crash with AAI Loaders and Space Exploration if loaders don't have lubrication cost enabled
+---------------------------------------------------------------------------------------------------
 Version: 2.0.1
-Date: 08. 03. 2026
+Date: 2026-03-08
   Bugfixes:
     - Fixed crash when elevated rails is not enabled
 ---------------------------------------------------------------------------------------------------
 Version: 2.0.0
-Date: 08. 03. 2026
+Date: 2026-03-08
   Info:
     - Initial version
   Major Features:
