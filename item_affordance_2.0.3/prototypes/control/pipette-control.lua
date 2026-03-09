@@ -1,3 +1,7 @@
+if settings.startup["affordance-place-with-base"].value then
+    return
+end
+
 -- this patch was originally written by Shemp:
 -- https://mods.factorio.com/mod/item_affordance/discussion/69ae16dfa15769a7e3ac4788
 -- i have made some slight changes, but this would not have been possible without thier input

@@ -3,6 +3,9 @@ local recipes = data.raw.recipe
 
 return {
     data = function()
+        if not settings.startup["pipe-components"].value then
+            return
+        end
         componentUtil.assignComponentToEntity("pipe-to-ground", "pipe-to-ground", "pipe", 4)
         componentUtil.fromComponentRecipie("pipe-to-ground", "pipe", 8)
 
@@ -41,6 +44,9 @@ return {
         end
     end,
     data_updates = function()
+        if not settings.startup["pipe-components"].value then
+            return
+        end
         if mods["space-exploration"] then
             componentUtil.assignComponentToEntity("pipe-to-ground", "se-space-pipe-to-ground", "se-space-pipe", 5)
             componentUtil.fromComponentRecipie("pipe-to-ground", "se-space-pipe", 10)

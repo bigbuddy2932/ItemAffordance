@@ -41,6 +41,9 @@ end
 
 return {
     data_rebalance = function()
+        if not settings.startup["belt-components"].value or not settings.startup["belt-component-rebalance"].value then
+            return
+        end
         local recipe = recipes["transport-belt"]
         if recipe then
             multiplyRecipieBatch(recipe, 6, 5)
@@ -74,6 +77,9 @@ return {
         end
     end,
     data_updates_rebalance = function()
+        if not settings.startup["belt-components"].value or not settings.startup["belt-component-rebalance"].value then
+            return
+        end
         if mods["space-exploration"] then
             local recipe = recipes["se-space-transport-belt"]
             if recipe then

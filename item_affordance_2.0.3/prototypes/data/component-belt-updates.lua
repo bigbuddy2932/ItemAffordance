@@ -1,5 +1,9 @@
 local componentUtil = require("component-util")
 
+if not settings.startup["belt-components"].value then
+    return
+end
+
 local function modifyBelt(type, name, component, cost, amount)
     local item = data.raw.item[name]
     if item and data.raw.recipe[name] and data.raw[type][name] then
