@@ -13,8 +13,6 @@ item_affordance_component_order["se-space-rail-support"] = "a[rail]-b[rail-ramp]
 item_affordance_component_order["rail"] = COMPONENT_ORDER .. "-a[rail]"
 item_affordance_component_order["se-space-rail"] = "a[rail]-d" .. COMPONENT_ORDER
 
-item_affordance_component_order["medium-electric-pole"] = "a[energy]-b" .. COMPONENT_ORDER .. "-b[medium-electric-pole]"
-
 local item = data.raw["item"]
 for _, name in ipairs(item_affordance_allowed_item_groups["all-logistic-container-component"]) do
     for type, fixes in ipairs(item_affordance_logistic_container_types) do
@@ -39,10 +37,19 @@ end
 
 _G.item_affordance_subgroup_order = {}
 
-if settings.startup["elevated-rail-component-base"] and settings.startup["elevated-rail-component-base"].value == "rails" then
+local setting = settings.startup["elevated-rail-component-base"]
+
+if setting and setting.value == "rails" then
     item_affordance_subgroup_order["rail-support"] = "rail"
     item_affordance_subgroup_order["rail-ramp"] = "rail"
 
     item_affordance_subgroup_order["se-space-rail-support"] = "rail"
     item_affordance_subgroup_order["se-space-rail-ramp"] = "rail"
 end
+
+setting = settings.startup["bob-machine-components"]
+
+if setting and setting.value then
+    item_affordance_subgroup_order["bob-fluid-furnace"] = "bob-smelting-machine"
+end
+

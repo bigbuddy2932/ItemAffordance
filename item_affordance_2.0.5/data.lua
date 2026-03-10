@@ -1,7 +1,7 @@
 require("prototypes.globals")
 require("prototypes.data.pipette-data")
 
-if mods["boblibrary"] == nil then
+if not DATA_DELAY then
     require("prototypes.data.rebalance-belt-costs").data_rebalance()
     require("prototypes.data.component-logistic-container-updates")
     require("prototypes.data.component-pipe-updates").data()

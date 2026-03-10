@@ -139,3 +139,7 @@ if mods["aai-programmable-structures"] then
         }
     })
 end
+
+if mods["bobassembly"] or mods["bobplates"] or mods["bobpower"] then
+    data:extend({doAffordanceComponentsOn("bob-machine-components", "i")})
+end

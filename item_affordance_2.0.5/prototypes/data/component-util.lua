@@ -4,15 +4,24 @@ require("prototypes.data.component-order-lookup")
 local pipetteOverrides = data.raw["mod-data"]["item_affordance-entity-to-item-list"].data
 local items = data.raw["item"]
 local railPlanners = data.raw["rail-planner"]
+local modules = data.raw.module
 local ITEM_GROUP_PATTERN = "%w*%[[%w-]+%]"
 local handledItems = {}
 
-local function handleItemSubgroup(item_name)
-    local item = items[item_name]
-
-    if item == nil then
-        item = railPlanners[item_name]
+local function itemLookup(itemName)
+    local item = items[itemName]
+    if item then
+        return item
     end
+    item = railPlanners[itemName]
+    if item then
+        return item
+    end
+    return modules[itemName]
+end
+
+local function handleItemSubgroup(item_name)
+    local item = itemLookup(item_name)
 
     if item then
         local new_subgroup = item_affordance_subgroup_order[item_name]
@@ -34,10 +43,7 @@ local function handleItemOrder(item_name, sample_result)
     end
 
     handleItemSubgroup(item_name)
-    local item = items[item_name]
-    if item == nil then
-        item = railPlanners[item_name]
-    end
+    local item = itemLookup(item_name)
 
     if item then
         if item_affordance_component_order[item_name] then
@@ -175,10 +181,8 @@ end
 local assignComponentToEntity = function(result_type, result_name, component_name, cost)
     cost = cost or 1
     local entity = data.raw[result_type][result_name]
-    local component_item = items[component_name]
-    if component_item == nil then
-        component_item = railPlanners[component_name]
-    end
+    local component_item = itemLookup(component_name)
+
     if entity and component_item then
         if settings.startup["affordance-retrieve-base"].value then
             entity.minable.results = {{name = component_name, amount = cost, type = "item"}}
@@ -188,7 +192,7 @@ local assignComponentToEntity = function(result_type, result_name, component_nam
 
         if settings.startup["affordance-place-with-base"].value then
             entity.placeable_by = {{item = component_name, count = cost}}
-            local afforded_item = items[result_name]
+            local afforded_item = itemLookup(result_name)
 
             if afforded_item then
                 pipetteOverrides[result_name] = result_name
@@ -248,5 +252,6 @@ return {
   assignComponentToEntity = assignComponentToEntity,
   attachComponentToItem = attachComponentToItem,
   attachComponentsToItem = attachComponentsToItem,
-  recyclePatch = recyclePatch
+  recyclePatch = recyclePatch,
+  itemLookup = itemLookup
 }

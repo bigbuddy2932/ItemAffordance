@@ -1,5 +1,14 @@
 ---------------------------------------------------------------------------------------------------
-Version: 2.0.3
+Version: 2.0.5
+Date: 2026-03-10
+  Modding:
+    - Support for Bob's power poles
+    - Support for Bob's fluid tanks, pipes, and valves
+  Bugfixes:
+    - Fixed pipette for rail ramp
+    - Fixed crash with quality
+---------------------------------------------------------------------------------------------------
+Version: 2.0.4
 Date: 2026-03-09
   Bugfixes:
     - Fixed pipette tool again

@@ -6,7 +6,7 @@ if not settings.startup["belt-components"].value then
 end
 
 local function modifyBelt(type, name, component, cost, amount)
-    local item = items[name]
+    local item = componentUtil.itemLookup(name)
     if item and data.raw.recipe[name] and data.raw[type][name] then
         componentUtil.assignComponentToEntity(type, name, component, cost)
         if type == "underground-belt" then
@@ -96,7 +96,7 @@ for _, tier in ipairs(item_affordance_belt_tiers) do
         if mods["dredgeworks"] then
             local dredgeworksFloatingBeltName = hypenFix(string.format("floating-%stransport-belt%s", prefix, postfix))
             modifyBelt("transport-belt", dredgeworksFloatingBeltName, beltName, 2)
-            local item = data.raw.item[dredgeworksFloatingBeltName]
+            local item = componentUtil.itemLookup(dredgeworksFloatingBeltName)
             if item then
                 local order = item.order
                 if order then

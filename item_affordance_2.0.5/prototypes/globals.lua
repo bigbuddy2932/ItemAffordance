@@ -1,5 +1,7 @@
 _G.COMPONENT_ORDER = ".[COMPONENT]"
 
+_G.DATA_DELAY = mods["boblibrary"] ~= nil or mods["quality"] ~= nil
+
 --sets of items that can be interchanged simply, used in both stages
 _G.item_affordance_allowed_item_groups = {}
 _G.item_affordance_entity_type_lookup = {}

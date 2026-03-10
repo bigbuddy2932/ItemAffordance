@@ -1,4 +1,5 @@
 local componentUtil = require("component-util")
+local items = data.raw["item"]
 
 return {
     data = function()
@@ -15,6 +16,10 @@ return {
         end
 
         if settings.startup["electric-pole-components"].value then
+            local small_pole = items["small-electric-pole"]
+            if small_pole then
+                small_pole.order = COMPONENT_ORDER .. "-a[small-electric-pole]"
+            end
             componentUtil.attachComponentToItem("electric-pole", "big-electric-pole", "medium-electric-pole", 2)
         end
 
@@ -33,9 +38,15 @@ return {
         end
     end,
     data_updates = function()
-        if mods["dredgeworks"] then
-            if settings.startup["electric-pole-components"].value then
+        if settings.startup["electric-pole-components"].value then
+            if mods["dredgeworks"] then
                 componentUtil.attachComponentToItem("electric-pole", "wire-buoy", "medium-electric-pole", 2)
+            end
+
+            if mods["bobpower"] then
+                componentUtil.attachComponentToItem("electric-pole", "bob-big-electric-pole-2", "bob-medium-electric-pole-2", 2)
+                componentUtil.attachComponentToItem("electric-pole", "bob-big-electric-pole-3", "bob-medium-electric-pole-3", 2)
+                componentUtil.attachComponentToItem("electric-pole", "bob-big-electric-pole-4", "bob-medium-electric-pole-4", 2)
             end
         end
 
