@@ -28,8 +28,6 @@ for _, name in ipairs(item_affordance_allowed_item_groups["all-logistic-containe
             item_affordance_component_order[key] = "a[silo]-" .. COMPONENT_ORDER .. item_affordance_logistic_order[name]
         elseif fixes.prefix == "angels-warehouse-" then
             item_affordance_component_order[key] = "a[angels-warehouse]-" .. COMPONENT_ORDER .. item_affordance_logistic_order[name]
-        elseif item[key] and item[key].order then
-            item_affordance_component_order[key] = item[key].order .. "-" .. COMPONENT_ORDER
         elseif item[STEEL_CHEST] and item[STEEL_CHEST].order then
             item_affordance_component_order[key] = item[STEEL_CHEST].order .. COMPONENT_ORDER .. "[" .. key .. "]"
         else

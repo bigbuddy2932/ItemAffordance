@@ -3,6 +3,7 @@ require("prototypes.data.component-order-lookup")
 
 local pipetteOverrides = data.raw["mod-data"]["item_affordance-entity-to-item-list"].data
 local items = data.raw["item"]
+local railPlanners = data.raw["rail-planner"]
 local ITEM_GROUP_PATTERN = "%w*%[[%w-]+%]"
 local handledItems = {}
 
@@ -10,7 +11,7 @@ local function handleItemSubgroup(item_name)
     local item = items[item_name]
 
     if item == nil then
-        item = data.raw["rail-planner"][item_name]
+        item = railPlanners[item_name]
     end
 
     if item then
@@ -35,7 +36,7 @@ local function handleItemOrder(item_name, sample_result)
     handleItemSubgroup(item_name)
     local item = items[item_name]
     if item == nil then
-        item = data.raw["rail-planner"][item_name]
+        item = railPlanners[item_name]
     end
 
     if item then
@@ -78,13 +79,34 @@ local function handleItemOrder(item_name, sample_result)
     end
 end
 
-local function recycleRecipe(name, details)
+local function recyclePatch(name, details)
     if data.raw["recipe"][name] then
-        data.raw["recipe"][name] = nil
+        log("override recycle patch for " .. name)
+        data.raw["recipe"][name].results = details.results
+        data.raw["recipe"][name].ingredients = details.ingredients
+        data.raw["recipe"][name].energy_required = 0.002
+        data.raw["recipe"][name].emissions_multiplier = 0
+        data.raw["recipe"][name].maximum_productivity = 0
+        data.raw["recipe"][name].surface_conditions = nil
+        data.raw["recipe"][name].allow_quality = false
+        data.raw["recipe"][name].allow_productivity = false
+        data.raw["recipe"][name].hide_from_stats = true
+        data.raw["recipe"][name].hide_from_bonus_gui = true
+        data.raw["recipe"][name].hidden = true
+        data.raw["recipe"][name].hidden_in_factoriopedia = true
+        data.raw["recipe"][name].auto_recycle = false
+        data.raw["recipe"][name].hide_from_signal_gui = true
+    end
+end
+
+local function recycleRecipe(name, details)
+    local recall_name = name .. "-recall"
+    if data.raw["recipe"][recall_name] then
+        data.raw["recipe"][recall_name] = nil
     end
     local recipe = {
         type = "recipe",
-        name = name,
+        name = recall_name .. "-recall",
         category = "smelting",
         results = {{amount = details.amount, name = details.result, type = "item"}},
         ingredients = {{amount = 1, type = "item", name = details.ingredient}},
@@ -103,9 +125,12 @@ local function recycleRecipe(name, details)
     }
 
     --this casues the entry to show up in the factoriopedia for some reason
-    --[[if mods["quality"] then
-        recipe["additional_categories"] = {"recycling"}
-    end--]]
+    if mods["quality"] then
+        recyclePatch(name .. "-recycling", {
+            results = {{amount = details.amount, name = details.result, type = "item"}},
+            ingredients = {{amount = 1, type = "item", name = details.ingredient}}
+        })
+    end
 
     data:extend({recipe})
 end
@@ -136,9 +161,9 @@ local fromComponentRecipie = function(result_name, component_name, cost, amount)
         if items[result_name] and items[result_name].auto_recycle then
             items[result_name].auto_recycle = false
         end
-        recycleRecipe(result_name .. "-recycling", {
+        recycleRecipe(result_name, {
             ingredient = result_name,
-            amount = cost,
+            amount = cost/amount,
             result = component_name
         })
         return recipe
@@ -151,6 +176,9 @@ local assignComponentToEntity = function(result_type, result_name, component_nam
     cost = cost or 1
     local entity = data.raw[result_type][result_name]
     local component_item = items[component_name]
+    if component_item == nil then
+        component_item = railPlanners[component_name]
+    end
     if entity and component_item then
         if settings.startup["affordance-retrieve-base"].value then
             entity.minable.results = {{name = component_name, amount = cost, type = "item"}}
@@ -219,5 +247,6 @@ return {
   fromComponentRecipie = fromComponentRecipie,
   assignComponentToEntity = assignComponentToEntity,
   attachComponentToItem = attachComponentToItem,
-  attachComponentsToItem = attachComponentsToItem
+  attachComponentsToItem = attachComponentsToItem,
+  recyclePatch = recyclePatch
 }

@@ -2,6 +2,22 @@
 Version: 2.0.3
 Date: 2026-03-09
   Bugfixes:
+    - Fixed pipette tool again
+    - Fixed underground pipe duplication issue
+    - Fixed crash when using Bob's mods
+  Minor Features:
+    - Recyclers also reclaim component items like furnaces do
+  Modding:
+    - Support for Loaders Modernized
+    - Support for More Belts
+    - Support for BetterBelts
+    - Support for Promethium Belts
+    - Support for Bob's belts
+    - Support for Bob's logistic containers
+---------------------------------------------------------------------------------------------------
+Version: 2.0.3
+Date: 2026-03-09
+  Bugfixes:
     - Fixed CRC check issue due to script calls being conditional on mod settings
 ---------------------------------------------------------------------------------------------------
 Version: 2.0.2

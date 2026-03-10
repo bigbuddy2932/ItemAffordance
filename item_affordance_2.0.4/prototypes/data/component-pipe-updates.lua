@@ -6,8 +6,6 @@ return {
         if not settings.startup["pipe-components"].value then
             return
         end
-        componentUtil.assignComponentToEntity("pipe-to-ground", "pipe-to-ground", "pipe", 4)
-        componentUtil.fromComponentRecipie("pipe-to-ground", "pipe", 8)
 
         if data.raw.technology["foundry"] and mods["5dim_core"] == nil then
             local effects = data.raw.technology["foundry"].effects
@@ -47,9 +45,12 @@ return {
         if not settings.startup["pipe-components"].value then
             return
         end
+        componentUtil.assignComponentToEntity("pipe-to-ground", "pipe-to-ground", "pipe", 4)
+        componentUtil.fromComponentRecipie("pipe-to-ground", "pipe", 8, 2)
+
         if mods["space-exploration"] then
             componentUtil.assignComponentToEntity("pipe-to-ground", "se-space-pipe-to-ground", "se-space-pipe", 5)
-            componentUtil.fromComponentRecipie("pipe-to-ground", "se-space-pipe", 10)
+            componentUtil.fromComponentRecipie("pipe-to-ground", "se-space-pipe", 10, 2)
 
             componentUtil.attachComponentToItem("storage-tank", "se-space-pipe-long-j-3", "se-space-pipe", 2)
             componentUtil.attachComponentToItem("storage-tank", "se-space-pipe-long-j-5", "se-space-pipe", 3)

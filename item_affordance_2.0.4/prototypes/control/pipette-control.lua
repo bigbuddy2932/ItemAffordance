@@ -1,4 +1,4 @@
-if settings.startup["affordance-place-with-base"].value then
+if not settings.startup["affordance-place-with-base"].value then
     return
 end
 

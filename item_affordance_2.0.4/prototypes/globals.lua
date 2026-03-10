@@ -64,6 +64,11 @@ if mods["Warehousing"] then
   table.insert(item_affordance_logistic_container_types, {prefix = "warehouse-", postfix = ""})
 end
 
+if mods["boblogistics"] then
+  table.insert(item_affordance_logistic_container_types, {prefix = "bob-", postfix = "-chest-2"})
+  table.insert(item_affordance_logistic_container_types, {prefix = "bob-", postfix = "-chest-3"})
+end
+
 --belt tiers, only used in prototype stage
 _G.item_affordance_belt_tiers = {
     {prefix = ""},
@@ -97,4 +102,22 @@ if mods["5dim_transport"] then
     table.insert(item_affordance_belt_tiers, {prefix = "5d-", postfix = "-08"})
     table.insert(item_affordance_belt_tiers, {prefix = "5d-", postfix = "-09"})
     table.insert(item_affordance_belt_tiers, {prefix = "5d-", postfix = "-10"})
+end
+
+if mods["more-belts"] then
+    table.insert(item_affordance_belt_tiers, {prefix = "ddi-", postfix = "-mk4-"})
+    table.insert(item_affordance_belt_tiers, {prefix = "ddi-", postfix = "-mk5-"})
+    table.insert(item_affordance_belt_tiers, {prefix = "ddi-", postfix = "-mk6-"})
+    table.insert(item_affordance_belt_tiers, {prefix = "ddi-", postfix = "-mk7-"})
+    table.insert(item_affordance_belt_tiers, {prefix = "ddi-", postfix = "-mk8-"})
+end
+
+if mods["promethium-belts"] or mods["promethium-belts-rebalance"] then
+    table.insert(item_affordance_belt_tiers, {prefix = "promethium-"})
+end
+
+if mods["boblogistics"] then
+    table.insert(item_affordance_belt_tiers, {prefix = "bob-basic-"})
+    table.insert(item_affordance_belt_tiers, {prefix = "bob-turbo-"})
+    table.insert(item_affordance_belt_tiers, {prefix = "bob-ultimate-"})
 end
