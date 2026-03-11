@@ -14,11 +14,14 @@ item_affordance_component_order["rail"] = COMPONENT_ORDER .. "-a[rail]"
 item_affordance_component_order["se-space-rail"] = "a[rail]-d" .. COMPONENT_ORDER
 
 local item = data.raw["item"]
+-- special lookups for logistic containers only
 for _, name in ipairs(item_affordance_allowed_item_groups["all-logistic-container-component"]) do
     for type, fixes in ipairs(item_affordance_logistic_container_types) do
         local key = fixes.prefix .. name .. fixes.postfix
 
-        if fixes.prefix == "warehouse-" then
+        if key == name.. "-chest" or key == "bob-" .. name.. "-chest-2" or key == "bob-" .. name.. "-chest-3" then
+            item_affordance_component_order[key] = "b[storage]-d" .. COMPONENT_ORDER .. item_affordance_logistic_order[name] .. "-[" .. key .. "]"
+        elseif fixes.prefix == "warehouse-" then
             item_affordance_component_order[key] = "b[storage]-" .. COMPONENT_ORDER .. item_affordance_logistic_order[name] .. "-b[warehouse]"
         elseif fixes.prefix == "storehouse-" then
             item_affordance_component_order[key] = "b[storage]-" .. COMPONENT_ORDER .. item_affordance_logistic_order[name] .. "-a[storehouse]"
@@ -26,6 +29,8 @@ for _, name in ipairs(item_affordance_allowed_item_groups["all-logistic-containe
             item_affordance_component_order[key] = "a[silo]-" .. COMPONENT_ORDER .. item_affordance_logistic_order[name]
         elseif fixes.prefix == "angels-warehouse-" then
             item_affordance_component_order[key] = "a[angels-warehouse]-" .. COMPONENT_ORDER .. item_affordance_logistic_order[name]
+        elseif item[key] and item[key].order then
+            item_affordance_component_order[key] = item[key].order .. "-" .. COMPONENT_ORDER
         elseif item[STEEL_CHEST] and item[STEEL_CHEST].order then
             item_affordance_component_order[key] = item[STEEL_CHEST].order .. COMPONENT_ORDER .. "[" .. key .. "]"
         else
@@ -34,6 +39,18 @@ for _, name in ipairs(item_affordance_allowed_item_groups["all-logistic-containe
     end
 end
 
+
+_G.item_affordance_afforded_order = {}
+-- special lookups for logistic containers only
+for _, name in ipairs(item_affordance_allowed_item_groups["all-logistic-container-component"]) do
+    for type, fixes in ipairs(item_affordance_logistic_container_types) do
+        local key = fixes.prefix .. name .. fixes.postfix
+
+        if key == name.. "-chest" or key == "bob-" .. name.. "-chest-2" or key == "bob-" .. name.. "-chest-3" then
+            item_affordance_afforded_order[key] = "b[storage]-d" .. item_affordance_logistic_order[name] .. "-[" .. key .. "]"
+        end
+    end
+end
 
 _G.item_affordance_subgroup_order = {}
 

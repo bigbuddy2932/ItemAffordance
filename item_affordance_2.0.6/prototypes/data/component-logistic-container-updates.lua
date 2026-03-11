@@ -1,5 +1,12 @@
 local componentUtil = require("component-util")
 
+if settings.startup["all-logistic-container-component-base"].value == "disabled"
+    and settings.startup["passive-logistic-container-component-base"].value == "disabled"
+    and settings.startup["active-logistic-container-component-base"].value == "disabled" then
+       return
+end
+
+
 for _, containerType in ipairs(item_affordance_logistic_container_types) do
     if settings.startup["all-logistic-container-component-base"].value == "disabled" then
         --passive robot chests

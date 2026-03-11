@@ -33,6 +33,15 @@ end
 
 local function handleItemOrder(item_name, sample_result)
     handleItemSubgroup(sample_result)
+    local sample_item = itemLookup(sample_result)
+    if sample_item and sample_item.order then
+        if item_affordance_afforded_order[sample_result] then
+            sample_item.order = item_affordance_afforded_order[sample_result]
+        end
+        if sample_item.order then
+            log(sample_result .. ";;" .. sample_item.order)
+        end
+    end
     if handledItems[item_name] then
         return
     end
@@ -47,6 +56,7 @@ local function handleItemOrder(item_name, sample_result)
 
     if item then
         if item_affordance_component_order[item_name] then
+            log(item_name .. ";" .. item_affordance_component_order[item_name])
             item.order = item_affordance_component_order[item_name]
             return
         end
@@ -59,7 +69,6 @@ local function handleItemOrder(item_name, sample_result)
                 if end_index + 1 < string.len(item.order) then
                     possible_order = possible_order .. string.sub(item.order, end_index + 1)
                 end
-                local sample_item = items[sample_result]
 
                 if sample_item then
                     local sample_order = sample_item.order
@@ -67,6 +76,7 @@ local function handleItemOrder(item_name, sample_result)
                         if possible_order < sample_order then
                             item.order = possible_order
                         else
+                            log(item_name .. ";" .. COMPONENT_ORDER .. "-" .. item.order)
                             item.order = COMPONENT_ORDER .. "-" .. item.order
                         end
                     else
@@ -75,10 +85,13 @@ local function handleItemOrder(item_name, sample_result)
                 else
                     item.order = possible_order
                 end
+                log(item_name .. ";" .. possible_order)
             else
+                log(item_name .. ";" .. COMPONENT_ORDER .. "-" .. item.order)
                 item.order = COMPONENT_ORDER .. "-" .. item.order
             end
         else
+            log(item_name .. ";" .. COMPONENT_ORDER .. "-unknown")
             --for naughty mod authors who dont give thier items an order
             item.order = COMPONENT_ORDER .. "-unknown"
         end
