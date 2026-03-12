@@ -1,4 +1,12 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.0.7
+Date: 2026-03-12
+  Major Features:
+    - Furnaces and recyclers can no longer reclaim afforded items due to limitations with the FurnacePrototype, and must instead be reclaimed by using the new "Reclaimer" tile entity
+  Bugfixes:
+    - Reclaiming afforded items can no longer bypass productivity and quality module limitations
+    - Fixed pipette for afforded ghosts
+---------------------------------------------------------------------------------------------------
 Version: 2.0.6
 Date: 2026-03-11
   Bugfixes:

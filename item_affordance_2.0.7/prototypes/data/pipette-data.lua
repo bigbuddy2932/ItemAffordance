@@ -1,4 +1,4 @@
-data:extend{
+data:extend({
     {
         type = "custom-input",
         name = "item_affordance-pipette",
@@ -13,4 +13,4 @@ data:extend{
         hidden = true,
         hidden_in_factoriopedia = true
     }
-}
+})

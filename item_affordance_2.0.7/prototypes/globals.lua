@@ -1,6 +1,7 @@
 _G.COMPONENT_ORDER = ".[COMPONENT]"
 
-_G.DATA_DELAY = mods["boblibrary"] ~= nil or mods["quality"] ~= nil
+_G.DATA_UPDATE_DELAY = mods["boblibrary"] ~= nil or mods["quality"] ~= nil
+_G.DATA_FINAL_DELAY = mods["space-exploration"] ~= nil
 
 --sets of items that can be interchanged simply, used in both stages
 _G.item_affordance_allowed_item_groups = {}

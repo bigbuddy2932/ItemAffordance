@@ -98,35 +98,18 @@ local function handleItemOrder(item_name, sample_result)
     end
 end
 
-local function recyclePatch(name, details)
-    if data.raw["recipe"][name] then
-        log("override recycle patch for " .. name)
-        data.raw["recipe"][name].results = details.results
-        data.raw["recipe"][name].ingredients = details.ingredients
-        data.raw["recipe"][name].energy_required = 0.002
-        data.raw["recipe"][name].emissions_multiplier = 0
-        data.raw["recipe"][name].maximum_productivity = 0
-        data.raw["recipe"][name].surface_conditions = nil
-        data.raw["recipe"][name].allow_quality = false
-        data.raw["recipe"][name].allow_productivity = false
-        data.raw["recipe"][name].hide_from_stats = true
-        data.raw["recipe"][name].hide_from_bonus_gui = true
-        data.raw["recipe"][name].hidden = true
-        data.raw["recipe"][name].hidden_in_factoriopedia = true
-        data.raw["recipe"][name].auto_recycle = false
-        data.raw["recipe"][name].hide_from_signal_gui = true
-    end
-end
-
 local function recycleRecipe(name, details)
+    if data.raw["recipe"][name .. "-recycling"] then
+        data.raw["recipe"][name .. "-recycling"] = nil
+    end
     local recall_name = name .. "-recall"
     if data.raw["recipe"][recall_name] then
         data.raw["recipe"][recall_name] = nil
     end
     local recipe = {
         type = "recipe",
-        name = recall_name .. "-recall",
-        category = "smelting",
+        name = recall_name,
+        category = "adordance-reclaimer",
         results = {{amount = details.amount, name = details.result, type = "item"}},
         ingredients = {{amount = 1, type = "item", name = details.ingredient}},
         energy_required = 0.002,
@@ -140,16 +123,16 @@ local function recycleRecipe(name, details)
         hidden = true,
         hidden_in_factoriopedia = true,
         auto_recycle = false,
-        hide_from_signal_gui = true
+        hide_from_signal_gui = true,
+        allowed_module_categories = {"speed", "efficiency"},
+        allow_decomposition = true,
+        localised_name = {
+          "recipe-name.recycling",
+          {
+            "item-name." .. details.ingredient
+          }
+        }
     }
-
-    --this casues the entry to show up in the factoriopedia for some reason
-    if mods["quality"] then
-        recyclePatch(name .. "-recycling", {
-            results = {{amount = details.amount, name = details.result, type = "item"}},
-            ingredients = {{amount = 1, type = "item", name = details.ingredient}}
-        })
-    end
 
     data:extend({recipe})
 end
@@ -265,6 +248,5 @@ return {
   assignComponentToEntity = assignComponentToEntity,
   attachComponentToItem = attachComponentToItem,
   attachComponentsToItem = attachComponentsToItem,
-  recyclePatch = recyclePatch,
   itemLookup = itemLookup
 }

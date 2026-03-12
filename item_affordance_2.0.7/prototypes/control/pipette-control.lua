@@ -77,16 +77,22 @@ script.on_event("item_affordance-pipette", function(e)
     if player == nil or not player.is_cursor_empty() then return end
 
     local entity = player.selected
-    if entity and pipetteOverrides[entity.name] then
-        local data = {
-            player = player,
-            name = pipetteOverrides[entity.name],
-            quality = entity.quality,
-        }
-        if settings.get_player_settings(e.player_index)["affordance-pipette-autocraft"].value then
-            handleAutocraft(data.player, data.name, data.quality)
+    if entity then
+        local name = entity.name
+        if name and name == "entity-ghost" and entity.ghost_name then
+            name = entity.ghost_name
         end
-        enqueueTask("iaPipette", 1, data)
+        if pipetteOverrides[name] then
+            local data = {
+                player = player,
+                name = pipetteOverrides[name],
+                quality = entity.quality,
+            }
+            if settings.get_player_settings(e.player_index)["affordance-pipette-autocraft"].value then
+                handleAutocraft(data.player, data.name, data.quality)
+            end
+            enqueueTask("iaPipette", 1, data)
+        end
     end
 end)
 

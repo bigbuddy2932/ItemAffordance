@@ -56,7 +56,7 @@ _G.item_affordance_subgroup_order = {}
 
 local setting = settings.startup["elevated-rail-component-base"]
 
-if setting and setting.value == "rails" then
+if setting and setting.value == "rails" and data.raw["item-subgroup"]["rail"] then
     item_affordance_subgroup_order["rail-support"] = "rail"
     item_affordance_subgroup_order["rail-ramp"] = "rail"
 
