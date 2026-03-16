@@ -1,11 +1,9 @@
-require("prototypes.globals")
-require("prototypes.data.component-order-lookup")
-
 local pipetteOverrides = data.raw["mod-data"]["item_affordance-entity-to-item-list"].data
 local items = data.raw["item"]
 local railPlanners = data.raw["rail-planner"]
 local modules = data.raw.module
 local ITEM_GROUP_PATTERN = "%w*%[[%w-]+%]"
+local ITEM_GROUP_PATTERN_WITH_NEXT = "%w*%[[%w-]+%]%-%w"
 local handledItems = {}
 
 local function itemLookup(itemName)
@@ -63,7 +61,11 @@ local function handleItemOrder(item_name, sample_result)
 
         if item.order then
             --try to respect item groups if possible
-            local start_index, end_index = string.find(item.order, ITEM_GROUP_PATTERN)
+            local start_index, end_index = string.find(item.order, ITEM_GROUP_PATTERN_WITH_NEXT)
+            if start_index == nil or end_index == nil then
+                start_index, end_index = string.find(item.order, ITEM_GROUP_PATTERN)
+            end
+
             if start_index and end_index then
                 local possible_order = string.sub(item.order, start_index, end_index) .. "-" .. COMPONENT_ORDER
                 if end_index + 1 < string.len(item.order) then
@@ -76,7 +78,6 @@ local function handleItemOrder(item_name, sample_result)
                         if possible_order < sample_order then
                             item.order = possible_order
                         else
-                            log(item_name .. ";" .. COMPONENT_ORDER .. "-" .. item.order)
                             item.order = COMPONENT_ORDER .. "-" .. item.order
                         end
                     else
@@ -85,16 +86,14 @@ local function handleItemOrder(item_name, sample_result)
                 else
                     item.order = possible_order
                 end
-                log(item_name .. ";" .. possible_order)
             else
-                log(item_name .. ";" .. COMPONENT_ORDER .. "-" .. item.order)
                 item.order = COMPONENT_ORDER .. "-" .. item.order
             end
         else
-            log(item_name .. ";" .. COMPONENT_ORDER .. "-unknown")
             --for naughty mod authors who dont give thier items an order
             item.order = COMPONENT_ORDER .. "-unknown"
         end
+        log(item_name .. ";" .. item.order)
     end
 end
 
@@ -137,10 +136,10 @@ local function recycleRecipe(name, details)
     data:extend({recipe})
 end
 
-local fromComponentRecipie = function(result_name, component_name, cost, amount)
+local function fromComponentRecipieStep(parsed_result_name, parsed_recipe_name, component_name, cost, amount)
     cost = cost or 1
     amount = amount or 1
-    local recipe = data.raw["recipe"][result_name]
+    local recipe = data.raw["recipe"][parsed_recipe_name]
 
     if recipe then
         recipe.ingredients = {{amount = cost, type = "item", name = component_name}}
@@ -158,20 +157,39 @@ local fromComponentRecipie = function(result_name, component_name, cost, amount)
         recipe.allow_as_intermediate = true
         recipe.allow_intermediates = true
         recipe.auto_recycle = false
-        recipe.results = {{amount = amount, name = result_name, type = "item"}}
+        recipe.results = {{amount = amount, name = parsed_result_name, type = "item"}}
 
-        if items[result_name] and items[result_name].auto_recycle then
-            items[result_name].auto_recycle = false
+        if items[parsed_result_name] and items[parsed_result_name].auto_recycle then
+            items[parsed_result_name].auto_recycle = false
         end
-        recycleRecipe(result_name, {
-            ingredient = result_name,
+        recycleRecipe(parsed_recipe_name, {
+            ingredient = parsed_result_name,
             amount = cost/amount,
             result = component_name
         })
         return recipe
     end
-    log("Failed to lookup recipie for " .. result_name)
     return nil
+end
+
+local fromComponentRecipie = function(combo_name, component_name, cost, amount)
+    local parsed_result_name = ""
+    local parsed_recipe_name = ""
+    if type(combo_name) == "string" then
+        parsed_result_name = combo_name
+        parsed_recipe_name = combo_name
+    else
+        parsed_result_name = combo_name.item
+        parsed_recipe_name = combo_name.recipe
+    end
+    cost = cost or 1
+    amount = amount or 1
+
+    local recipe = fromComponentRecipieStep(parsed_result_name, parsed_recipe_name, component_name, cost, amount)
+    if recipe == nil then
+        log("Failed to lookup recipie for " .. parsed_recipe_name)
+    end
+    return recipe
 end
 
 local assignComponentToEntity = function(result_type, result_name, component_name, cost)
@@ -211,9 +229,16 @@ end
 
 local attachComponentToItem = function(result_type, result_name, component_name, cost)
     cost = cost or 1
-    log(string.format("[%s][%s][%s]", result_type, result_name, component_name))
-    assignComponentToEntity(result_type, result_name, component_name, cost)
-    fromComponentRecipie(result_name, component_name, cost)
+    local parsed_result_name = ""
+    if type(result_name) == "string" then
+        parsed_result_name = result_name
+    else
+        parsed_result_name = result_name.name
+    end
+
+    log(string.format("[%s][%s][%s]", result_type, parsed_result_name, component_name))
+    assignComponentToEntity(result_type, parsed_result_name, component_name, cost)
+    fromComponentRecipie(parsed_result_name, component_name, cost)
 end
 
 local function attachComponentsToItem(component_setting_name, allowed_values, result_type, prefix, postfix)

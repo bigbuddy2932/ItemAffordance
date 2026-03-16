@@ -1,5 +1,3 @@
-require("prototypes.globals")
-
 _G.item_affordance_component_order = {}
 local STEEL_CHEST = "steel-chest"
 
@@ -21,10 +19,14 @@ for _, name in ipairs(item_affordance_allowed_item_groups["all-logistic-containe
 
         if key == name.. "-chest" or key == "bob-" .. name.. "-chest-2" or key == "bob-" .. name.. "-chest-3" then
             item_affordance_component_order[key] = "b[storage]-d" .. COMPONENT_ORDER .. item_affordance_logistic_order[name] .. "-[" .. key .. "]"
-        elseif fixes.prefix == "warehouse-" then
-            item_affordance_component_order[key] = "b[storage]-" .. COMPONENT_ORDER .. item_affordance_logistic_order[name] .. "-b[warehouse]"
         elseif fixes.prefix == "storehouse-" then
             item_affordance_component_order[key] = "b[storage]-" .. COMPONENT_ORDER .. item_affordance_logistic_order[name] .. "-a[storehouse]"
+        elseif fixes.prefix == "warehouse-" then
+            item_affordance_component_order[key] = "b[storage]-" .. COMPONENT_ORDER .. item_affordance_logistic_order[name] .. "-b[warehouse]"
+        elseif fixes.prefix == "kr-" and fixes.postfix == "-strongbox" then
+            item_affordance_component_order[key] = "b[storage]-" .. COMPONENT_ORDER .. item_affordance_logistic_order[name] .. "-a[kr-strongbox]"
+        elseif fixes.prefix == "kr-" and fixes.postfix == "-warehouse" then
+            item_affordance_component_order[key] = "b[storage]-" .. COMPONENT_ORDER .. item_affordance_logistic_order[name] .. "-b[kr-warehouse]"
         elseif fixes.prefix == "angels-silo-" then
             item_affordance_component_order[key] = "a[silo]-" .. COMPONENT_ORDER .. item_affordance_logistic_order[name]
         elseif fixes.prefix == "angels-warehouse-" then
@@ -46,7 +48,11 @@ for _, name in ipairs(item_affordance_allowed_item_groups["all-logistic-containe
     for type, fixes in ipairs(item_affordance_logistic_container_types) do
         local key = fixes.prefix .. name .. fixes.postfix
 
-        if key == name.. "-chest" or key == "bob-" .. name.. "-chest-2" or key == "bob-" .. name.. "-chest-3" then
+        if key == name .. "-chest"
+        or key == "bob-" .. name .. "-chest-2"
+        or key == "bob-" .. name .. "-chest-3"
+        or key == "kr-" .. name .. "-strongbox"
+        or key == "kr-" .. name .. "-warehouse" then
             item_affordance_afforded_order[key] = "b[storage]-d" .. item_affordance_logistic_order[name] .. "-[" .. key .. "]"
         end
     end

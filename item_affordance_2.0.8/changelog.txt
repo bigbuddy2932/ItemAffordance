@@ -1,4 +1,15 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.0.8
+Date: 2026-03-16
+  Bugfixes:
+    - Fixed logistic chest ordering in 5Dim's mods
+    - Reclaimer now shows up in 5Dim's production category
+  Modding:
+    - Support for Valves
+    - Support for Angel's Petrochemical valves
+    - Support for Krastorio's belts, logistic containers, and pipes
+    - Marked Ultracube as officially unsupported
+---------------------------------------------------------------------------------------------------
 Version: 2.0.7
 Date: 2026-03-12
   Major Features:
@@ -14,12 +25,12 @@ Date: 2026-03-11
 ---------------------------------------------------------------------------------------------------
 Version: 2.0.5
 Date: 2026-03-10
-  Modding:
-    - Support for Bob's power poles
-    - Support for Bob's fluid tanks, pipes, and valves
   Bugfixes:
     - Fixed pipette for rail ramp
     - Fixed crash with quality
+  Modding:
+    - Support for Bob's power poles
+    - Support for Bob's fluid tanks, pipes, and valves
 ---------------------------------------------------------------------------------------------------
 Version: 2.0.4
 Date: 2026-03-09

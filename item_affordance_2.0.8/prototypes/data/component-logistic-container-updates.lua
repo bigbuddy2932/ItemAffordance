@@ -6,6 +6,17 @@ if settings.startup["all-logistic-container-component-base"].value == "disabled"
        return
 end
 
+if mods["5dim_core"] and data.raw["item-subgroup"]["logistic-pasive"] then
+    for _, logisticType in ipairs(item_affordance_allowed_item_groups["all-logistic-container-component"]) do
+        local name = logisticType .. "-chest"
+        log(name)
+        local item = data.raw.item[name]
+        if item then
+            log(name .. "passive")
+            item.subgroup = "logistic-pasive"
+        end
+    end
+end
 
 for _, containerType in ipairs(item_affordance_logistic_container_types) do
     if settings.startup["all-logistic-container-component-base"].value == "disabled" then

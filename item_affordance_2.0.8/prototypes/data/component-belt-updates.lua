@@ -55,6 +55,8 @@ for _, tier in ipairs(item_affordance_belt_tiers) do
             modifyBelt("loader", baseLoader2Name, beltName, 80)
             local baseLoader1Name = hypenFix(string.format("%sloader-1x1%s", prefix, postfix))
             modifyBelt("loader-1x1", baseLoader1Name, beltName, 100)
+            baseLoader1Name = hypenFix(string.format("%sloader%s", prefix, postfix))
+            modifyBelt("loader-1x1", baseLoader1Name, beltName, 100)
 
             --AAI loaders
             if mods["aai-loaders"] and settings.startup["aai-loaders-mode"].value ~= "graphics-only" then
@@ -77,6 +79,11 @@ for _, tier in ipairs(item_affordance_belt_tiers) do
             if mods["loaders-modernized"] then
                 local modernizedLoaderName = hypenFix(string.format("%smdrn-loader%s", prefix, postfix))
                 modifyBelt("loader-1x1", modernizedLoaderName, beltName, 100)
+            end
+
+            if mods["Krastorio2"] then
+                local krastorioLoaderName = hypenFix(string.format("kr-%sloader%s", prefix, postfix))
+                modifyBelt("loader-1x1", krastorioLoaderName, beltName, 100)
             end
         end
 

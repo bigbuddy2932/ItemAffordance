@@ -268,3 +268,7 @@ data:extend({
           }
     }
 })
+--furnace-coal
+if mods["5dim_core"] and data.raw["item-subgroup"]["furnace-coal"] then
+    data.raw.item["adordance-reclaimer"].subgroup = "furnace-coal"
+end

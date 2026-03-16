@@ -42,12 +42,27 @@ return {
             assignPipeToGround("pipe", "5d-pipe-to-ground-mk1-30", 16)
             assignPipeToGround("pipe", "5d-pipe-to-ground-mk1-50", 26)
         end
+
+        if mods["angelspetrochem"] then
+            componentUtil.attachComponentToItem("valve", "angels-valve-one-way", "angels-valve-inspector")
+            componentUtil.attachComponentToItem("valve", "angels-valve-overflow", "angels-valve-inspector")
+            componentUtil.attachComponentToItem("valve", "angels-valve-top-up", "angels-valve-inspector")
+        end
+
+        if mods["Krastorio2"] then
+            assignPipeToGround("kr-steel-pipe", "kr-steel-pipe-to-ground", 8)
+        end
     end,
     data_updates = function()
         if not settings.startup["pipe-components"].value then
             return
         end
         assignPipeToGround("pipe", "pipe-to-ground", 4)
+
+        if mods["valves"] then
+            componentUtil.attachComponentToItem("valve", "valves-top_up", "valves-one_way")
+            componentUtil.attachComponentToItem("valve", "valves-overflow", "valves-one_way")
+        end
 
         if mods["boblogistics"] then
             assignPipeToGround("bob-copper-pipe", "bob-copper-pipe-to-ground", 4)

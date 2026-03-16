@@ -15,14 +15,6 @@ return {
             )
         end
 
-        if settings.startup["electric-pole-components"].value then
-            local small_pole = items["small-electric-pole"]
-            if small_pole then
-                small_pole.order = COMPONENT_ORDER .. "-a[small-electric-pole]"
-            end
-            componentUtil.attachComponentToItem("electric-pole", "big-electric-pole", "medium-electric-pole", 2)
-        end
-
         if mods["angelsaddons-storage"] and data.raw.item["angels-silo"] then
             for i = 1, 6, 1 do
                 componentUtil.attachComponentToItem("container", "angels-silo-ore" .. i, "angels-silo")
@@ -39,6 +31,12 @@ return {
     end,
     data_updates = function()
         if settings.startup["electric-pole-components"].value then
+            local small_pole = items["small-electric-pole"]
+            if small_pole then
+                small_pole.order = COMPONENT_ORDER .. "-a[small-electric-pole]"
+            end
+            componentUtil.attachComponentToItem("electric-pole", "big-electric-pole", "medium-electric-pole", 2)
+
             if mods["dredgeworks"] then
                 componentUtil.attachComponentToItem("electric-pole", "wire-buoy", "medium-electric-pole", 2)
             end
