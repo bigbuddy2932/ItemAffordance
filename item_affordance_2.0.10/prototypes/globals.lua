@@ -1,7 +1,7 @@
 _G.COMPONENT_ORDER = ".[COMPONENT]"
 
 _G.DATA_UPDATE_DELAY = mods["boblibrary"] ~= nil or mods["quality"] ~= nil or mods["Krastorio2"] ~= nil
-_G.DATA_FINAL_DELAY = mods["space-exploration"] ~= nil or mods["5dim_core"] ~= nil or mods["pypostprocessing"] ~= nil
+_G.DATA_FINAL_DELAY = mods["space-exploration"] ~= nil or mods["5dim_core"] ~= nil or mods["pypostprocessing"] ~= nil or mods["AdvancedBeltsSA"] ~= nil
 
 _G.GLOBAL_UTIL = {
     hypenFix = function(str) return string.gsub(string.gsub(string.gsub(str, "%-%-", "-"), "^%-", ""), "%-$", "") end
@@ -148,4 +148,10 @@ end
 if mods["Krastorio2"] then
     table.insert(item_affordance_belt_tiers, {prefix = "kr-advanced-"})
     table.insert(item_affordance_belt_tiers, {prefix = "kr-superior-"})
+end
+
+if mods["AdvancedBeltsSA"] then
+    table.insert(item_affordance_belt_tiers, {prefix = "extreme-"})
+    table.insert(item_affordance_belt_tiers, {prefix = "ultimate-"})
+    table.insert(item_affordance_belt_tiers, {prefix = "high-speed-"})
 end

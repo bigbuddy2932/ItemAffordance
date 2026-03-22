@@ -88,6 +88,12 @@ return {
             handleRecipe("turbo-transport-belt", {input = 60, output = 50}, {{name = "processing-unit", amount = 7}})
         end
 
+        if mods["AdvancedBeltsSA"] then
+            handleRecipe("extreme-belt", {input = 60, output = 50}, {{name = "superconductor", amount = 10}})
+            handleRecipe("ultimate-belt", {input = 30, output = 25}, {{name = "supercapacitor", amount = 10}})
+            handleRecipe("high-speed-belt", {input = 12, output = 10}, {{name = "quantum-processor", amount = 1}})
+        end
+
         if mods["boblogistics"] then
             handleRecipe("bob-turbo-transport-belt", {input = 36, output = 30}, {{name = "processing-unit", amount = 7}})
 
