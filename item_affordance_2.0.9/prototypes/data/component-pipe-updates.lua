@@ -52,6 +52,20 @@ return {
         if mods["Krastorio2"] then
             assignPipeToGround("kr-steel-pipe", "kr-steel-pipe-to-ground", 8)
         end
+
+        if mods["pyindustry"] then
+            if mods["pycoalprocessing"] then
+                assignPipeToGround("niobium-pipe", "niobium-pipe-to-ground", 5)
+            else
+                assignPipeToGround("niobium-pipe", "niobium-pipe-to-ground", 4)
+            end
+
+            if mods["pyhightech"] then
+                assignPipeToGround("ht-pipes", "ht-pipes-to-ground", 5)
+            end
+
+            componentUtil.attachComponentToItem("valve", "py-underflow-valve", "py-overflow-valve")
+        end
     end,
     data_updates = function()
         if not settings.startup["pipe-components"].value then

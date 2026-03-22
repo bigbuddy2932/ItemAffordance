@@ -1,4 +1,17 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.0.9
+Date: 2026-03-20
+  Minor Features:
+    - Support for tile affordance
+  Bugfixes:
+    - Fixed a crash when Beltboxes, More Belts, and Space Age are all present
+    - Fixed some modded belt items not being in the same subgroup with Bob's Logistics
+  Modding:
+    - Support for Dectorio
+    - Support for Pyanodon's logistic container and belt recipes
+    - Support for Space Exploration's stacking belt boxes with SE deadlock bridge for 2.0
+    - Support for Lane Splitters with Lane Balancers for Space Exploration Deep Space
+---------------------------------------------------------------------------------------------------
 Version: 2.0.8
 Date: 2026-03-16
   Bugfixes:

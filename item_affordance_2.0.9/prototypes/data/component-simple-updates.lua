@@ -13,6 +13,10 @@ return {
             componentUtil.attachComponentsToItem("basic-circuit-network-component",
                 item_affordance_allowed_item_groups["basic-circuit-network-component"]
             )
+
+            if mods["Dectorio"] then
+                componentUtil.attachComponentToItem("lamp", "dect-small-lamp-glow", "small-lamp")
+            end
         end
 
         if mods["angelsaddons-storage"] and data.raw.item["angels-silo"] then
@@ -28,14 +32,29 @@ return {
                 "radar"
             )
         end
+
+        if mods["Dectorio"] then
+            for _, value in ipairs({"dead-grey-trunk", "dead-tree-desert", "dry-hairy-tree", "dry-tree"}) do
+                componentUtil.attachComponentToItem("tree", {entity_name = value, item_name = "dect-base-" .. value}, "dect-base-dead-dry-hairy-tree", 1, false)
+            end
+            for i = 2, 9, 1 do
+                componentUtil.attachComponentToItem("tree", {entity_name = "tree-0" .. i, item_name = "dect-base-tree-0" .. i}, "dect-base-tree-01", 1, false)
+            end
+            for _, value in ipairs({"2-red", "8-red", "9-red", "6-brown", "8-brown", "9-brown"}) do
+                componentUtil.attachComponentToItem("tree", {entity_name = "tree-0", item_name = "dect-base-tree-0" .. value}, "dect-base-tree-01", 1, false)
+            end
+        end
     end,
     data_updates = function()
         if settings.startup["electric-pole-components"].value then
             local small_pole = items["small-electric-pole"]
-            if small_pole then
-                small_pole.order = COMPONENT_ORDER .. "-a[small-electric-pole]"
+
+            if mods["pycoalprocessing"] == nil then
+                if small_pole then
+                    small_pole.order = COMPONENT_ORDER .. "-a[small-electric-pole]"
+                end
+                componentUtil.attachComponentToItem("electric-pole", "big-electric-pole", "medium-electric-pole", 2)
             end
-            componentUtil.attachComponentToItem("electric-pole", "big-electric-pole", "medium-electric-pole", 2)
 
             if mods["dredgeworks"] then
                 componentUtil.attachComponentToItem("electric-pole", "wire-buoy", "medium-electric-pole", 2)

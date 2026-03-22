@@ -44,6 +44,7 @@ data:extend({
         order = "Zb[affordance-retrieve-base]",
         default_value = true
     },
+    doAffordanceComponentsOn("tile-components", "Zc"),
     doAffordanceComponentsOn("belt-components", "a"),
     {
         type = "bool-setting",
@@ -55,7 +56,7 @@ data:extend({
     beltComponentCost("underground-belt", "b", 5),
     beltComponentCost("splitter", "c", 8)
 })
-if mods["lane-splitters"] then
+if mods["lane-splitters"] or mods["lane-balancers"] then
     data:extend({beltComponentCost("lane-splitter", "c", 6)})
 end
 if mods["deadlock-beltboxes-loaders"] then

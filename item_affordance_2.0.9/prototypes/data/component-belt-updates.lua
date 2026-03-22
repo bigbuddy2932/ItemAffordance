@@ -1,107 +1,119 @@
 local componentUtil = require("component-util")
 local items = data.raw.item
+local subgroups = data.raw["item-subgroup"]
 
 if not settings.startup["belt-components"].value then
     return
 end
 
-local function modifyBelt(type, name, component, cost, amount)
+local function modifyBelt(type, name, component, cost, amount, subgroup)
     local item = componentUtil.itemLookup(name)
     if item and data.raw.recipe[name] and data.raw[type][name] then
         componentUtil.assignComponentToEntity(type, name, component, cost)
         if type == "underground-belt" then
             cost = cost * 2
-        elseif type == "transport-belt" and item.stack_size < 100 then
-            item.stack_size = 100
         end
 
         local recipe = componentUtil.fromComponentRecipie(name, component, cost, amount)
         if mods["space-age"] and recipe and recipe["additional_categories"] == nil then
             recipe["additional_categories"] = {"metallurgy"}
         end
+
+        if subgroup and subgroups[subgroup] then
+            item.subgroup = subgroup
+        end
     end
 end
 
-local function hypenFix(str)
-    return string.gsub(string.gsub(string.gsub(str, "%-%-", "-"), "^%-", ""), "%-$", "")
+local lane_splitter_subgroup = nil
+local lane_splitter_cost = not settings.startup["belt-component-cost-lane-splitter"] and 6 or settings.startup["belt-component-cost-lane-splitter"].value
+
+if mods["space-exploration"] and (mods["lane-splitters"] or mods["lane-balancers"]) and data.raw["item-subgroup"]["splitter"] then
+    lane_splitter_subgroup = "splitter"
 end
 
 for _, tier in ipairs(item_affordance_belt_tiers) do
     local prefix = tier.prefix or ""
     local postfix = tier.postfix or ""
-    local beltName = hypenFix(string.format("%stransport-belt%s", prefix, postfix))
+    local beltName = GLOBAL_UTIL.hypenFix(string.format("%stransport-belt%s", prefix, postfix))
+
+    local item = componentUtil.itemLookup(beltName)
+    if item and item.stack_size < 100 then
+        item.stack_size = 100
+    end
+
     if tier.base_override then
         modifyBelt("transport-belt", beltName, tier.base_override, 1)
         beltName = tier.base_override
     end
 
     if items[beltName] then
-        local undergroundName = hypenFix(string.format("%sunderground-belt%s", prefix, postfix))
-        local splitterName = hypenFix(string.format("%ssplitter%s", prefix, postfix))
-        local laneSplitterName = hypenFix(string.format("%slane-splitter%s", prefix, postfix))
+        local undergroundName = GLOBAL_UTIL.hypenFix(string.format("%sunderground-belt%s", prefix, postfix))
+        local splitterName = GLOBAL_UTIL.hypenFix(string.format("%ssplitter%s", prefix, postfix))
+        local laneSplitterName = GLOBAL_UTIL.hypenFix(string.format("%slane-splitter%s", prefix, postfix))
 
         modifyBelt("underground-belt", undergroundName, beltName, settings.startup["belt-component-cost-underground-belt"].value, 2)
         modifyBelt("splitter", splitterName, beltName, settings.startup["belt-component-cost-splitter"].value)
-        modifyBelt("lane-splitter", laneSplitterName, beltName, not settings.startup["belt-component-cost-lane-splitter"] and 6 or settings.startup["belt-component-cost-lane-splitter"].value)
+        modifyBelt("lane-splitter", laneSplitterName, beltName, lane_splitter_cost, 1, lane_splitter_subgroup)
 
         if mods["more-belts"] then
-            laneSplitterName = hypenFix(string.format("%slane-splitter", postfix))
-            modifyBelt("lane-splitter", laneSplitterName, beltName, not settings.startup["belt-component-cost-lane-splitter"] and 6 or settings.startup["belt-component-cost-lane-splitter"].value)
+            laneSplitterName = GLOBAL_UTIL.hypenFix(string.format("%slane-splitter", postfix))
+            modifyBelt("lane-splitter", laneSplitterName, beltName, lane_splitter_cost, 1, lane_splitter_subgroup)
         end
 
         if settings.startup["belt-component-loaders-enabled"].value then
             --"base game" loaders for any mod that names them correctly
-            local baseLoader2Name = hypenFix(string.format("%sloader%s", prefix, postfix))
+            local baseLoader2Name = GLOBAL_UTIL.hypenFix(string.format("%sloader%s", prefix, postfix))
             modifyBelt("loader", baseLoader2Name, beltName, 80)
-            local baseLoader1Name = hypenFix(string.format("%sloader-1x1%s", prefix, postfix))
+            local baseLoader1Name = GLOBAL_UTIL.hypenFix(string.format("%sloader-1x1%s", prefix, postfix))
             modifyBelt("loader-1x1", baseLoader1Name, beltName, 100)
-            baseLoader1Name = hypenFix(string.format("%sloader%s", prefix, postfix))
+            baseLoader1Name = GLOBAL_UTIL.hypenFix(string.format("%sloader%s", prefix, postfix))
             modifyBelt("loader-1x1", baseLoader1Name, beltName, 100)
 
             --AAI loaders
             if mods["aai-loaders"] and settings.startup["aai-loaders-mode"].value ~= "graphics-only" then
-                local aaiLoaderName = hypenFix(string.format("aai-%s%sloader", prefix, postfix))
+                local aaiLoaderName = GLOBAL_UTIL.hypenFix(string.format("aai-%s%sloader", prefix, postfix))
                 modifyBelt("loader-1x1", aaiLoaderName, beltName, settings.startup["aai-loaders-mode"].value == "lubricated" and 4 or 100)
             end
 
             --comfortable loaders
             if mods["comfortable-loader"] then
-                local comfortableLoaderName = hypenFix(string.format("%scomfortable-loader%s", prefix, postfix))
+                local comfortableLoaderName = GLOBAL_UTIL.hypenFix(string.format("%scomfortable-loader%s", prefix, postfix))
                 modifyBelt("loader-1x1", comfortableLoaderName, beltName, 100)
             end
 
             --deadlock loaders
             if mods["deadlock-beltboxes-loaders"] then
-                local deadlockLoaderName = hypenFix(string.format("%stransport-belt-loader%s", prefix, postfix))
+                local deadlockLoaderName = GLOBAL_UTIL.hypenFix(string.format("%stransport-belt-loader%s", prefix, postfix))
                 modifyBelt("loader-1x1", deadlockLoaderName, beltName, 100)
             end
 
             if mods["loaders-modernized"] then
-                local modernizedLoaderName = hypenFix(string.format("%smdrn-loader%s", prefix, postfix))
+                local modernizedLoaderName = GLOBAL_UTIL.hypenFix(string.format("%smdrn-loader%s", prefix, postfix))
                 modifyBelt("loader-1x1", modernizedLoaderName, beltName, 100)
             end
 
             if mods["Krastorio2"] then
-                local krastorioLoaderName = hypenFix(string.format("kr-%sloader%s", prefix, postfix))
+                local krastorioLoaderName = GLOBAL_UTIL.hypenFix(string.format("kr-%sloader%s", prefix, postfix))
                 modifyBelt("loader-1x1", krastorioLoaderName, beltName, 100)
             end
         end
 
         if mods["deadlock-beltboxes-loaders"] then
-            local deadlockBeltboxName = hypenFix(string.format("%stransport-belt-beltbox%s", prefix, postfix))
+            local deadlockBeltboxName = GLOBAL_UTIL.hypenFix(string.format("%stransport-belt-beltbox%s", prefix, postfix))
             modifyBelt("furnace", deadlockBeltboxName, beltName, settings.startup["belt-component-cost-beltbox"].value)
         end
 
         if mods["5dim_transport"] then
-            local underground30Name = hypenFix(string.format("%sunderground-belt-30%s", prefix, postfix))
+            local underground30Name = GLOBAL_UTIL.hypenFix(string.format("%sunderground-belt-30%s", prefix, postfix))
             modifyBelt("underground-belt", underground30Name, beltName, 16, 2)
 
-            local underground50Name = hypenFix(string.format("%sunderground-belt-50%s", prefix, postfix))
+            local underground50Name = GLOBAL_UTIL.hypenFix(string.format("%sunderground-belt-50%s", prefix, postfix))
             modifyBelt("underground-belt", underground50Name, beltName, 26, 2)
         end
 
         if mods["dredgeworks"] then
-            local dredgeworksFloatingBeltName = hypenFix(string.format("floating-%stransport-belt%s", prefix, postfix))
+            local dredgeworksFloatingBeltName = GLOBAL_UTIL.hypenFix(string.format("floating-%stransport-belt%s", prefix, postfix))
             modifyBelt("transport-belt", dredgeworksFloatingBeltName, beltName, 2)
             local item = componentUtil.itemLookup(dredgeworksFloatingBeltName)
             if item then

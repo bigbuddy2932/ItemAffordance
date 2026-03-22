@@ -1,7 +1,11 @@
 _G.COMPONENT_ORDER = ".[COMPONENT]"
 
 _G.DATA_UPDATE_DELAY = mods["boblibrary"] ~= nil or mods["quality"] ~= nil or mods["Krastorio2"] ~= nil
-_G.DATA_FINAL_DELAY = mods["space-exploration"] ~= nil or mods["5dim_core"] ~= nil
+_G.DATA_FINAL_DELAY = mods["space-exploration"] ~= nil or mods["5dim_core"] ~= nil or mods["pypostprocessing"] ~= nil
+
+_G.GLOBAL_UTIL = {
+    hypenFix = function(str) return string.gsub(string.gsub(string.gsub(str, "%-%-", "-"), "^%-", ""), "%-$", "") end
+}
 
 --sets of items that can be interchanged simply, used in both stages
 _G.item_affordance_allowed_item_groups = {}
@@ -77,27 +81,38 @@ if mods["Krastorio2"] then
   table.insert(item_affordance_logistic_container_types, {prefix = "kr-", postfix = "-warehouse"})
 end
 
+if mods["pyindustry"] then
+  table.insert(item_affordance_logistic_container_types, {prefix = "py-shed-", postfix = ""})
+  table.insert(item_affordance_logistic_container_types, {prefix = "py-storehouse-", postfix = ""})
+  table.insert(item_affordance_logistic_container_types, {prefix = "py-warehouse-", postfix = ""})
+  table.insert(item_affordance_logistic_container_types, {prefix = "py-deposit-", postfix = ""})
+end
+
 --belt tiers, only used in prototype stage
 _G.item_affordance_belt_tiers = {
-    {prefix = ""},
-    {prefix = "fast-"},
-    {prefix = "express-"}
+    {prefix = "", order = "a", bob_subgroup = "bob-logistic-tier-1"},
+    {prefix = "fast-", order = "b", bob_subgroup = "bob-logistic-tier-2"},
+    {prefix = "express-", order = "c", bob_subgroup = "bob-logistic-tier-3"}
 }
 
 if mods["space-age"] then
-    table.insert(item_affordance_belt_tiers, {prefix = "turbo-"})
+    if mods["more-belts"] then
+        table.insert(item_affordance_belt_tiers, {prefix = "turbo-", base_override = "ddi-transport-belt-mk4", order = "d"})
+    else
+        table.insert(item_affordance_belt_tiers, {prefix = "turbo-", order = "d"})
+    end
 end
 
 if mods["space-exploration"] then
-    table.insert(item_affordance_belt_tiers, {prefix = "se-space-"})
-    table.insert(item_affordance_belt_tiers, {prefix = "se-deep-space-", postfix = "-black-"})
-    table.insert(item_affordance_belt_tiers, {prefix = "se-deep-space-", postfix = "-blue-", base_override = "se-deep-space-transport-belt-black"})
-    table.insert(item_affordance_belt_tiers, {prefix = "se-deep-space-", postfix = "-cyan-", base_override = "se-deep-space-transport-belt-black"})
-    table.insert(item_affordance_belt_tiers, {prefix = "se-deep-space-", postfix = "-green-", base_override = "se-deep-space-transport-belt-black"})
-    table.insert(item_affordance_belt_tiers, {prefix = "se-deep-space-", postfix = "-magenta-", base_override = "se-deep-space-transport-belt-black"})
-    table.insert(item_affordance_belt_tiers, {prefix = "se-deep-space-", postfix = "-red-", base_override = "se-deep-space-transport-belt-black"})
-    table.insert(item_affordance_belt_tiers, {prefix = "se-deep-space-", postfix = "-white-", base_override = "se-deep-space-transport-belt-black"})
-    table.insert(item_affordance_belt_tiers, {prefix = "se-deep-space-", postfix = "-yellow-", base_override = "se-deep-space-transport-belt-black"})
+    table.insert(item_affordance_belt_tiers, {prefix = "se-space-", order = "e"})
+    table.insert(item_affordance_belt_tiers, {prefix = "se-deep-space-", postfix = "-black-", order = "f"})
+    table.insert(item_affordance_belt_tiers, {prefix = "se-deep-space-", postfix = "-blue-", base_override = "se-deep-space-transport-belt-black", order = "g"})
+    table.insert(item_affordance_belt_tiers, {prefix = "se-deep-space-", postfix = "-cyan-", base_override = "se-deep-space-transport-belt-black", order = "h"})
+    table.insert(item_affordance_belt_tiers, {prefix = "se-deep-space-", postfix = "-green-", base_override = "se-deep-space-transport-belt-black", order = "i"})
+    table.insert(item_affordance_belt_tiers, {prefix = "se-deep-space-", postfix = "-magenta-", base_override = "se-deep-space-transport-belt-black", order = "j"})
+    table.insert(item_affordance_belt_tiers, {prefix = "se-deep-space-", postfix = "-red-", base_override = "se-deep-space-transport-belt-black", order = "k"})
+    table.insert(item_affordance_belt_tiers, {prefix = "se-deep-space-", postfix = "-white-", base_override = "se-deep-space-transport-belt-black", order = "l"})
+    table.insert(item_affordance_belt_tiers, {prefix = "se-deep-space-", postfix = "-yellow-", base_override = "se-deep-space-transport-belt-black", order = "m"})
 end
 
 if mods["5dim_transport"] then

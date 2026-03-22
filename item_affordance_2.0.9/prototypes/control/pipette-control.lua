@@ -79,7 +79,7 @@ script.on_event("item_affordance-pipette", function(e)
     local entity = player.selected
     if entity then
         local name = entity.name
-        if name and name == "entity-ghost" and entity.ghost_name then
+        if name and (name == "entity-ghost" or name == "tile-ghost") and entity.ghost_name then
             name = entity.ghost_name
         end
         if pipetteOverrides[name] then

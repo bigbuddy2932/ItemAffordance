@@ -10,6 +10,9 @@ item_affordance_component_order["rail-support"] = "a[rail]-a[rail]-" .. COMPONEN
 item_affordance_component_order["se-space-rail-support"] = "a[rail]-b[rail-ramp]-" .. COMPONENT_ORDER .. "-f[se-space-rail-support]"
 item_affordance_component_order["rail"] = COMPONENT_ORDER .. "-a[rail]"
 item_affordance_component_order["se-space-rail"] = "a[rail]-d" .. COMPONENT_ORDER
+item_affordance_component_order["niobium-pipe"] = "pipe[niobium]a"
+item_affordance_component_order["ht-pipes"] = "pipe[niobium]c"
+item_affordance_component_order["py-overflow-valve"] = "pipe[niobium]-flow-b"
 
 local item = data.raw["item"]
 -- special lookups for logistic containers only
@@ -23,6 +26,8 @@ for _, name in ipairs(item_affordance_allowed_item_groups["all-logistic-containe
             item_affordance_component_order[key] = "b[storage]-" .. COMPONENT_ORDER .. item_affordance_logistic_order[name] .. "-a[storehouse]"
         elseif fixes.prefix == "warehouse-" then
             item_affordance_component_order[key] = "b[storage]-" .. COMPONENT_ORDER .. item_affordance_logistic_order[name] .. "-b[warehouse]"
+        elseif fixes.prefix == "py-shed-" or fixes.prefix == "py-storehouse-" or fixes.prefix == "py-warehouse-" or fixes.prefix == "py-deposit-" then
+            item_affordance_component_order[key] = "logistic-container-" .. COMPONENT_ORDER .. item_affordance_logistic_order[name] .. "-a[" .. key .. "]"
         elseif fixes.prefix == "kr-" and fixes.postfix == "-strongbox" then
             item_affordance_component_order[key] = "b[storage]-" .. COMPONENT_ORDER .. item_affordance_logistic_order[name] .. "-a[kr-strongbox]"
         elseif fixes.prefix == "kr-" and fixes.postfix == "-warehouse" then
@@ -41,7 +46,6 @@ for _, name in ipairs(item_affordance_allowed_item_groups["all-logistic-containe
     end
 end
 
-
 _G.item_affordance_afforded_order = {}
 -- special lookups for logistic containers only
 for _, name in ipairs(item_affordance_allowed_item_groups["all-logistic-container-component"]) do
@@ -54,7 +58,36 @@ for _, name in ipairs(item_affordance_allowed_item_groups["all-logistic-containe
         or key == "kr-" .. name .. "-strongbox"
         or key == "kr-" .. name .. "-warehouse" then
             item_affordance_afforded_order[key] = "b[storage]-d" .. item_affordance_logistic_order[name] .. "-[" .. key .. "]"
+        elseif fixes.prefix == "py-shed-"
+        or fixes.prefix == "py-storehouse-"
+        or fixes.prefix == "py-warehouse-"
+        or fixes.prefix == "py-deposit-" then
+            item_affordance_afforded_order[key] = "logistic-container-" .. item_affordance_logistic_order[name] .. "-a[" .. key .. "]"
         end
+    end
+end
+
+item_affordance_afforded_order["niobium-pipe-to-ground"] = "pipe[niobium]b"
+item_affordance_afforded_order["ht-pipes-to-ground"] = "pipe[niobium]d"
+item_affordance_afforded_order["py-underflow-valve"] = "pipe[niobium]-flow-c"
+
+if mods["Dectorio"] then
+    for _, value in ipairs({"red", "green", "blue", "orange", "yellow", "pink", "purple", "black", "brown", "cyan", "acid"}) do
+        local name = "dect-" .. value .. "-refined-concrete"
+        item_affordance_afforded_order[name] = "z[" .. name .. "]"
+    end
+end
+
+if mods["space-exploration"] then
+    for _, tier in ipairs(item_affordance_belt_tiers) do
+        local prefix = tier.prefix or ""
+        local postfix = tier.postfix or ""
+        local splitterName = GLOBAL_UTIL.hypenFix(string.format("%ssplitter%s", prefix, postfix))
+        local laneSplitterName = GLOBAL_UTIL.hypenFix(string.format("%slane-splitter%s", prefix, postfix))
+        item_affordance_component_order[splitterName] = "c[splitter]-" .. tier.order .. "[" .. laneSplitterName .."]"
+        item_affordance_afforded_order[splitterName] = item_affordance_component_order[splitterName]
+        item_affordance_component_order[laneSplitterName] = "d[lane-splitter]-" .. tier.order  .. "[" .. laneSplitterName .."]"
+        item_affordance_afforded_order[laneSplitterName] = item_affordance_component_order[laneSplitterName]
     end
 end
 
@@ -72,7 +105,18 @@ end
 
 setting = settings.startup["bob-machine-components"]
 
-if setting and setting.value then
+if setting and setting.value and data.raw["item-subgroup"]["bob-smelting-machine"] then
     item_affordance_subgroup_order["bob-fluid-furnace"] = "bob-smelting-machine"
 end
 
+if mods["boblogistics"] then
+    for _, tier in ipairs(item_affordance_belt_tiers) do
+        local prefix = tier.prefix or ""
+        local postfix = tier.postfix or ""
+        if tier.bob_subgroup and data.raw["item-subgroup"][tier.bob_subgroup] then
+            for _, name in ipairs({"%sloader%s", "%sloader-1x1%s", "%stransport-belt-beltbox%s", "floating-%stransport-belt%s", "%slane-splitter%s", "aai-%s%sloader", "%scomfortable-loader%s", "%stransport-belt-loader%s", "%smdrn-loader%s", "kr-%sloader%s"}) do
+                item_affordance_subgroup_order[GLOBAL_UTIL.hypenFix(string.format(name, prefix, postfix))] = tier.bob_subgroup
+            end
+        end
+    end
+end

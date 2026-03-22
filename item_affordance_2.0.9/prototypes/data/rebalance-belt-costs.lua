@@ -63,7 +63,11 @@ return {
             return
         end
 
-        if mods["bobelectronics"] then
+        if mods["pycoalprocessing"] then
+            handleRecipe("transport-belt", {input = 6, output = 5}, {{name = "copper-plate", amount = 2}})
+            handleRecipe("fast-transport-belt", {input = 12, output = 10}, {{name = "advanced-circuit", amount = 1}, {name = "chromium", amount = 1}})
+            handleRecipe("express-transport-belt", {input = 40, output = 20}, {{name = "advanced-circuit", amount = 3}})
+        elseif mods["bobelectronics"] then
             handleRecipe("transport-belt", {input = 10, output = 10}, {{name = "bob-basic-circuit-board", amount = 1}})
             handleRecipe("fast-transport-belt", {input = 16, output = 14}, {{name = "electronic-circuit", amount = 3}})
             handleRecipe("express-transport-belt", {input = 36, output = 30}, {{name = "advanced-circuit", amount = 5}})

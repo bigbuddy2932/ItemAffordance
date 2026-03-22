@@ -6,3 +6,4 @@ if mods["elevated-rails"] then
 end
 require("prototypes.data.component-simple-updates").data_updates()
 require("prototypes.data.component-bob-machine-updates")
+require("prototypes.data.component-tile-updates")

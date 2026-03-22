@@ -32,7 +32,7 @@ end
 local function handleItemOrder(item_name, sample_result)
     handleItemSubgroup(sample_result)
     local sample_item = itemLookup(sample_result)
-    if sample_item and sample_item.order then
+    if sample_item then
         if item_affordance_afforded_order[sample_result] then
             sample_item.order = item_affordance_afforded_order[sample_result]
         end
@@ -192,53 +192,94 @@ local fromComponentRecipie = function(combo_name, component_name, cost, amount)
     return recipe
 end
 
-local assignComponentToEntity = function(result_type, result_name, component_name, cost)
+local assignComponentToEntity = function(result_type, result_name, component_name, cost, retrieve_base)
     cost = cost or 1
-    local entity = data.raw[result_type][result_name]
     local component_item = itemLookup(component_name)
+    local parsed_item_name = ""
+    local parsed_entity_name = ""
+    local parsed_retrieve_base = true
+    if retrieve_base ~= nil then
+        parsed_retrieve_base = retrieve_base
+    end
+    if type(result_name) == "string" then
+        parsed_item_name = result_name
+        parsed_entity_name = result_name
+    else
+        parsed_item_name = result_name.item_name
+        parsed_entity_name = result_name.entity_name
+    end
+    local entity = data.raw[result_type][parsed_entity_name]
 
     if entity and component_item then
-        if settings.startup["affordance-retrieve-base"].value then
+        if settings.startup["affordance-retrieve-base"].value and parsed_retrieve_base then
             entity.minable.results = {{name = component_name, amount = cost, type = "item"}}
             entity.minable.result = nil
-            entity.factoriopedia_alternative = result_name
+            entity.factoriopedia_alternative = parsed_entity_name
         end
 
         if settings.startup["affordance-place-with-base"].value then
             entity.placeable_by = {{item = component_name, count = cost}}
-            local afforded_item = itemLookup(result_name)
+            local afforded_item = itemLookup(parsed_item_name)
 
             if afforded_item then
-                pipetteOverrides[result_name] = result_name
+                pipetteOverrides[parsed_entity_name] = parsed_item_name
             else
-                log("Failed to register pipette override for " .. result_name .. " because " .. result_name .. " is a nil item")
+                log("Failed to register pipette override for " .. parsed_entity_name .. " because " .. parsed_item_name .. " is a nil item")
             end
 
             -- an item's order seems to matter to an entity's placeable_by
-            handleItemOrder(component_name, result_name)
+            handleItemOrder(component_name, parsed_item_name)
         end
     elseif settings.startup["affordance-retrieve-base"].value or settings.startup["affordance-place-with-base"].value then
         if component_item == nil then
-            log("Failed to assign entity to component for " .. result_name .. " because " .. component_name .. " is a nil item")
+            log("Failed to assign entity to component for " .. parsed_entity_name .. " because " .. component_name .. " is a nil item")
         end
         if entity == nil then
-            log("Failed to assign entity to component for " .. result_name .. " because it is a nil entity")
+            log("Failed to assign entity to component for " .. parsed_entity_name .. " because it is a nil entity of type " .. result_type)
         end
     end
 end
 
-local attachComponentToItem = function(result_type, result_name, component_name, cost)
+local attachComponentToItem = function(result_type, result_name, component_name, cost, retrieve_base)
     cost = cost or 1
     local parsed_result_name = ""
     if type(result_name) == "string" then
         parsed_result_name = result_name
     else
-        parsed_result_name = result_name.name
+        parsed_result_name = result_name.item_name
     end
 
     log(string.format("[%s][%s][%s]", result_type, parsed_result_name, component_name))
-    assignComponentToEntity(result_type, parsed_result_name, component_name, cost)
+    assignComponentToEntity(result_type, result_name, component_name, cost, retrieve_base)
     fromComponentRecipie(parsed_result_name, component_name, cost)
+end
+
+local attachComponentToTile = function(result_name, component_name, cost, rotation_types)
+    cost = cost or 1
+    local parsed_item_name = ""
+    local parsed_entity_name = ""
+    if type(result_name) == "string" then
+        parsed_item_name = result_name
+        parsed_entity_name = result_name
+    else
+        parsed_item_name = result_name.item_name
+        parsed_entity_name = result_name.entity_name
+    end
+
+    local rotation_types_to_iterate = rotation_types
+    if rotation_types_to_iterate == nil then
+        rotation_types_to_iterate = tile_rotation_types
+    end
+
+    for _, rotation_type in ipairs(rotation_types_to_iterate) do
+        local prefix = rotation_type.prefix or ""
+        local postfix = rotation_type.postfix or ""
+        local current_result_name = prefix .. parsed_entity_name .. postfix
+        log(string.format("[tile][%s][%s]", current_result_name, component_name))
+        assignComponentToEntity("tile", {item_name = parsed_item_name, entity_name = current_result_name}, component_name, cost, false)
+    end
+
+    fromComponentRecipie(parsed_item_name, component_name, cost)
 end
 
 local function attachComponentsToItem(component_setting_name, allowed_values, result_type, prefix, postfix)
@@ -273,5 +314,6 @@ return {
   assignComponentToEntity = assignComponentToEntity,
   attachComponentToItem = attachComponentToItem,
   attachComponentsToItem = attachComponentsToItem,
+  attachComponentToTile = attachComponentToTile,
   itemLookup = itemLookup
 }
