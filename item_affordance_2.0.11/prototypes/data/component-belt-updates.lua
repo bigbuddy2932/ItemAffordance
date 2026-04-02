@@ -38,8 +38,7 @@ for _, tier in ipairs(item_affordance_belt_tiers) do
     local beltName = GLOBAL_UTIL.hypenFix(string.format("%stransport-belt%s", prefix, postfix))
     local item = componentUtil.itemLookup(beltName)
     if item == nil then
-        -- if you are reading this as an aspiring mod author who wants to add your own belt tier to the game,
-        -- please pay attetion to the item and entity naming standards
+        -- if you are reading this as an aspiring mod author who wants to add your own belt tier to the game, then please pay attetion to the item and entity naming standards
         -- most of this logic is because of AdvancedBeltsSA
         beltName = GLOBAL_UTIL.hypenFix(string.format("%sbelt%s", prefix, postfix))
         item = componentUtil.itemLookup(beltName)

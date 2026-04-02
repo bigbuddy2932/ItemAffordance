@@ -40,7 +40,7 @@ data:extend({
           crafting_categories = {
             "adordance-reclaimer"
           },
-          crafting_speed = 999,
+          crafting_speed = 1000,
           damaged_trigger_effect = {
             damage_type_filters = "fire",
             entity_name = "rock-damaged-explosion",
@@ -191,7 +191,7 @@ data:extend({
           max_health = 1,
           minable = {
             mining_time = 0.2,
-            result = "stone-furnace"
+            result = "adordance-reclaimer"
           },
           mined_sound = {
             aggregation = {
